@@ -155,6 +155,7 @@ textarea.note_text_full {
 .submitable {
     max-height: 30px;
     font-size: 13px;
+    padding: 10px 10px;
 }
 .submitable_input {
     max-height: 30px;
@@ -290,4 +291,61 @@ a {
     padding: 10px 20px;
     border-radius: 5px;
     margin-bottom: 16px;
+}
+
+
+.drag-area{
+    border: 2px dashed #1c47a7;
+    height: 190px;
+    width: 100%;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+  .drag-area.active{
+    border: 2px solid #fff;
+  }
+  .drag-area .icon{
+    font-size: 100px;
+    color: #fff;
+  }
+  .drag-area header{
+    font-size: 30px;
+    font-weight: 500;
+    color: #000;
+  }
+  .drag-area span{
+    font-size: 25px;
+    font-weight: 500;
+    color: #000;
+    margin: 10px 0 15px 0;
+  }
+  .drag-area button{
+    padding: 10px 25px;
+    font-size: 20px;
+    font-weight: 500;
+    border: none;
+    outline: none;
+    background: #fff;
+    color: #5256ad;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.5s;
+  }
+  
+  .drag-area button:hover{
+    background: rgb(228, 220, 220);
+  }
+  
+  .drag-area img{
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 5px;
+  }
+
+  .dataTables_wrapper .dataTables_length select {
+    width: 60px;
 }

@@ -25,6 +25,9 @@
     <link href="{{ asset('admin/assets/css/bootstrap-extended.css') }}" rel="stylesheet">
     <link href="{{ asset('admin/assets/css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('admin/assets/css/icons.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('admin/assets/css/dark-theme.css') }}" />
+    <link rel="stylesheet" href="{{ asset('admin/assets/css/semi-dark.css') }}" />
+    <link rel="stylesheet" href="{{ asset('admin/assets/css/header-colors.css') }}" />
     <!-- Custom CSS -->
     <link href="{{ asset('admin/assets/css/others.css') }}" rel="stylesheet">
     <link href="{{ asset('admin/assets/css/toastr.min.css') }}" rel="stylesheet">
@@ -92,6 +95,21 @@
             headers: ({
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             })
+        });
+        $('.single-select').select2({
+            theme: 'bootstrap4',
+            width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+            placeholder: $(this).data('placeholder'),
+            allowClear: Boolean($(this).data('allow-clear')),
+        });
+        $('.select-search').select2({
+            theme: 'bootstrap4',
+            width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+            placeholder: $(this).data('placeholder'),
+            allowClear: Boolean($(this).data('allow-clear')),
+        });
+        $(document).on('change', '.submitable', function() {
+            $('#dataTable').DataTable().ajax.reload();
         });
     </script>
 

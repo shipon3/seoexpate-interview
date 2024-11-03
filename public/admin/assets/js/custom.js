@@ -65,88 +65,6 @@ function deleteItem(url,id,callback)
 			}
 		});
 }
-// delete global function
-function updateItem(url,id,callback)
-{
-	Swal.fire({
-		title: 'Are you sure?',
-		text: "You won't be able to revert this!",
-		icon: 'warning',
-		showCancelButton: true,
-		confirmButtonColor: '#3085d6',
-		cancelButtonColor: '#d33',
-		confirmButtonText: 'Yes'
-		}).then((result) => {
-			if (result.isConfirmed) {
-				var data = {
-					"id" : id,
-				}
-				$.ajax({
-					type: "GET",
-					url: url+id,
-					data: data,
-					success: function(response){
-						console.log(response);
-						if(response.status == 'error'){
-							Swal.fire(
-								'Deleted!',
-								'You can\'t Convert this.',
-								'error'
-								).then((result)=>{
-									callback(response,result);
-								})
-						}
-						if(response.status == 'success'){
-							Swal.fire(
-								'Success!',
-								'Successfully Converted.',
-								'success'
-								).then((result)=>{
-									callback(response,result);
-								})
-						}
-						
-					}
-				});
-				
-			}
-		});
-}
-
-// Approved global function
-function approvedItem(url,id,callback)
-{
-	Swal.fire({
-		title: 'Are you sure?',
-		text: "You are approve this!",
-		icon: 'success',
-		showCancelButton: true,
-		confirmButtonColor: '#3085d6',
-		cancelButtonColor: '#d33',
-		confirmButtonText: 'Yes'
-		}).then((result) => {
-			if (result.isConfirmed) {
-				var data = {
-					"id" : id,
-				}
-				$.ajax({
-					type: "GET",
-					url: url+id,
-					data: data,
-					success: function(response){
-						Swal.fire(
-						'Approved',
-						'Your item has been approved.',
-						'success'
-						).then((result)=>{
-							callback(response,result);
-						})
-					}
-				});
-				
-			}
-		});
-}
 
 // restore user
 function restore(url,id,callback)
@@ -172,40 +90,6 @@ function restore(url,id,callback)
 						Swal.fire(
 						'Restored',
 						'Your item has been restored.',
-						'success'
-						).then((result)=>{
-							callback(response,result);
-						})
-					}
-				});
-				
-			}
-		});
-}
-// Approved global function
-function receivedItem(url,id,callback)
-{
-	Swal.fire({
-		title: 'Are you sure?',
-		text: "You are receive this!",
-		icon: 'success',
-		showCancelButton: true,
-		confirmButtonColor: '#3085d6',
-		cancelButtonColor: '#d33',
-		confirmButtonText: 'Yes'
-		}).then((result) => {
-			if (result.isConfirmed) {
-				var data = {
-					"id" : id,
-				}
-				$.ajax({
-					type: "GET",
-					url: url+id,
-					data: data,
-					success: function(response){
-						Swal.fire(
-						'Received',
-						'Your item has been Received.',
 						'success'
 						).then((result)=>{
 							callback(response,result);
