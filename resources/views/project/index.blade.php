@@ -13,7 +13,9 @@
     </div>
     <div class="ms-auto">
         <div class="btn-group">
+            @if(Auth::user()->user_type == $admin->value)
             <button type="button" class="btn mx-1 btn-primary" id="add">Add</button>
+            @endif
             <a href="{{URL::previous()}}" class="btn btn-secondary">Back</a>
         </div>
     </div>

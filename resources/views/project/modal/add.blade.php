@@ -12,6 +12,7 @@
                         <input type="text" class="form-control" name="name" value="{{old('name')}}">
                         <span class="text-danger text-empty require-name"></span>
                     </div>
+                    @if(Auth::user()->user_type == $admin->value)
                     <div class="col-md-6">
                         <label class="form-label">Staff</label>
                         <select class="single-select mb-3 form-control" name="user_id">
@@ -21,6 +22,7 @@
                             @endforeach
                         </select>
                     </div>
+                    @endif
                     <div class="col-md-12">
                         <label class="form-label">Status</label>
                         <select class="single-select mb-3 form-control" name="status">

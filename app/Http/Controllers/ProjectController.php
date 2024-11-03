@@ -53,6 +53,7 @@ class ProjectController extends Controller
             'modal_btn' => 'Save',
             'project_status' => ProjectStatus::options(),
             'users' => $user->getUsers()->get(),
+            'admin' => UserType::ADMIN,
         ];
         return view('project.modal.add',$data);
     }
@@ -98,7 +99,8 @@ class ProjectController extends Controller
             'modal_btn' => 'Save',
             'project_status' => ProjectStatus::options(),
             'users' => $user->getUsers()->get(),
-            'project' => $project
+            'project' => $project,
+            'admin' => UserType::ADMIN,
         ];
         return view('project.modal.edit',$data);
     }
