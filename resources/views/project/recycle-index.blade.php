@@ -13,6 +13,7 @@
     </div>
     <div class="ms-auto">
         <div class="btn-group">
+            <button type="button" class="btn mx-1 btn-danger" id="deleteAll" disabled>Restore All</button>
             <a href="{{URL::previous()}}" class="btn btn-secondary">Back</a>
         </div>
     </div>
@@ -47,6 +48,11 @@
                     <thead>
                         <tr>
                             <th scope="col">#</th>
+                            <th scope="col">
+                                <div class="form-check">
+                                    <input class="form-check-input" name="select_all" type="checkbox" value="" id="selectAllCheckbox">
+                                </div>
+                            </th>
                             <th scope="col">Name</th>
                             <th scope="col">Assing To</th>
                             <th scope="col">Status</th>
@@ -86,6 +92,14 @@
                     searchable: false
                 },
                 {
+                data: 'select',
+                orderable: false,
+                searchable: false,
+                render: function(data, type, full, meta) {
+                    return `<input type="checkbox" class="delete-checkbox" data-id="${full.id}">`;
+                    }
+                },
+                {
                     data: 'name'
                 },
                 {
@@ -114,6 +128,34 @@
                     toastr[response.status](response.message);
                 }
             });
+        });
+
+        // Toggle all checkboxes when header checkbox is clicked
+        $("#selectAllCheckbox").on("change", function() {
+            $(".delete-checkbox").prop("checked", $(this).is(":checked"));
+            $("#deleteAll").prop("disabled", $(".delete-checkbox:checked").length === 0);
+        });
+        // Enable/disable "Delete All" button based on individual checkbox selection
+        $("body").on("change", ".delete-checkbox", function() {
+            $("#selectAllCheckbox").prop("checked", $(".delete-checkbox:checked").length === $(".delete-checkbox").length);
+            $("#deleteAll").prop("disabled", $(".delete-checkbox:checked").length === 0);
+        });
+        // delete all
+        $("#deleteAll").click(function() {
+            var ids = $(".delete-checkbox:checked").map(function() {
+                return $(this).data("id");
+            }).get();
+            
+            if (ids.length > 0) {
+                restoreAll('/project/multiple/restore', ids, function(response, result) {
+                    if (result.isConfirmed) {
+                        table.draw();
+                        toastr[response.status](response.message);
+                        $("#deleteAll").prop("disabled", true); // Disable delete button
+                        $("#selectAllCheckbox").prop("checked", false);
+                    }
+                });
+            }
         });
 
     });

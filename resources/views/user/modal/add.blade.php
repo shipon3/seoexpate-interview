@@ -20,7 +20,8 @@
                     <div class="col-md-12 mt-3">
                         <label class="form-label">Avater</label>
                         <br>
-                        <input type="file" name="avater" id="file">
+                        {{-- <input type="file" name="avater" id="file"> --}}
+                        <input id="fancy-file-upload" type="file" name="avater" accept=".jpg, .png, image/jpeg, image/png">
                         {{-- <div class="drag-area" ondrop="upload_file(event)" ondragover="return false">
                             <div class="icon"><i class="fas fa-cloud-upload-alt"></i></div>
                             <header>Drag & Drop to Upload File</header>

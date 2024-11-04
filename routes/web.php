@@ -33,9 +33,11 @@ Route::middleware('auth')->group(function () {
     Route::post('/project/update/{id}', [ProjectController::class,'update'])->name('project.update');
     Route::get('/project/show/{id}', [ProjectController::class,'show'])->name('project.show');
     Route::delete('/project/destroy/{id}', [ProjectController::class,'destroy'])->name('project.destory');
+    Route::delete('/project/multiple/destroy', [ProjectController::class,'destroyMultiple'])->name('project.destory.multiple');
 
     Route::get('/recycle/index', [ProjectController::class,'recycleIndex'])->name('recycle.index');
-    Route::get('/project/restore/{id}', [ProjectController::class,'restore'])->name('restore.index');
+    Route::get('/project/restore/{id}', [ProjectController::class,'restore']);
+    Route::get('/project/multiple/restore', [ProjectController::class,'restoreMultiple']);
 
     Route::get('/read-all-notifications',[NotificationController::class,'readAllNotifications'])->name('read.all.notify');
     Route::get('/notifications',[NotificationController::class,'notifications'])->name('notification.index');

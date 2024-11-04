@@ -150,7 +150,7 @@ class ProjectService
         return;
     }
 
-    public function delete(int $project_id) : void
+    public function delete(int $project_id,UserService $user) : void
     {
         $auth = Auth::user();
         $project = Project::with(['user'])->findOrFail($project_id);
@@ -158,10 +158,32 @@ class ProjectService
         //     unlink(public_path($project->image));
         // }
         if($auth->user_type != UserType::ADMIN){
+            $admin = $user->getAdmin();
+            $admin->notify(new ProjectNotification($project));
+            
+        }else{
             $user = $project->user;
             $user->notify(new ProjectNotification($project));
         }
         $project->delete();
+    }
+
+    public function multipleDelete(array $project_ids,UserService $user) : void
+    {
+        $auth = Auth::user();
+        foreach($project_ids as $key => $item){
+          $project = Project::where('id', $item)->first();
+          if($auth->user_type != UserType::ADMIN){
+                $admin = $user->getAdmin();
+                $admin->notify(new ProjectNotification($project));
+                
+            }else{
+                $user = $project->user;
+                $user->notify(new ProjectNotification($project));
+            }
+            $project->delete();
+        }
+        return;
     }
 
     public function trash(array $data) : object
@@ -196,14 +218,36 @@ class ProjectService
         ->make(true);
     }
 
-    public function restore(int $project_id) : void
+    public function restore(int $project_id, UserService $user) : void
     {
         $auth = Auth::user();
         $project = Project::withTrashed()->find($project_id);
         $project->restore();
         if($auth->user_type != UserType::ADMIN){
+            $admin = $user->getAdmin();
+            $admin->notify(new ProjectNotification($project));
+            
+        }else{
             $user = $project->user;
             $user->notify(new ProjectNotification($project));
+        }
+        return;
+    }
+
+    public function multipleRestore(array $project_ids, UserService $user)
+    {
+        $auth = Auth::user();
+        foreach($project_ids as $key => $item){
+            $project = Project::withTrashed()->find($item);
+            $project->restore();
+            if($auth->user_type != UserType::ADMIN){
+                $admin = $user->getAdmin();
+                $admin->notify(new ProjectNotification($project));
+                
+            }else{
+                $user = $project->user;
+                $user->notify(new ProjectNotification($project));
+            }
         }
         return;
     }

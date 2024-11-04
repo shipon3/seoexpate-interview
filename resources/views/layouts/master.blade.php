@@ -10,6 +10,7 @@
     <link rel="icon" href="#" type="image/png" />
     <!--plugins-->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <link href="{{ asset('admin/assets/plugins/fancy-file-uploader/fancy_fileupload.css') }}" rel="stylesheet" />
     <link href="{{ asset('admin/assets/plugins/select2/css/select2.min.css') }}" rel="stylesheet" />
     <link href="{{ asset('admin/assets/plugins/select2/css/select2-bootstrap4.css') }}" rel="stylesheet" />
     <link href="{{ asset('admin/assets/plugins/vectormap/jquery-jvectormap-2.0.2.css') }}" rel="stylesheet" />
@@ -89,12 +90,24 @@
     <script src="{{ asset('admin/assets/js/sweetalert-2.min.js') }}"></script>
     <script src="{{ asset('admin/assets/js/dataTables.min.js') }}"></script>
     <script src="{{ asset('admin/assets/plugins/select2/js/select2.min.js') }}"></script>
+    <script src="{{ asset('admin/assets/plugins/fancy-file-uploader/jquery.ui.widget.js') }}"></script>
+	<script src="{{ asset('admin/assets/plugins/fancy-file-uploader/jquery.fileupload.js') }}"></script>
+	<script src="{{ asset('admin/assets/plugins/fancy-file-uploader/jquery.iframe-transport.js') }}"></script>
+	<script src="{{ asset('admin/assets/plugins/fancy-file-uploader/jquery.fancy-fileupload.js') }}"></script>
     <script src="{{ asset('admin/assets/js/custom.js') }}"></script>
     <script>
         $.ajaxSetup({
             headers: ({
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             })
+        });
+        $("body").delegate("#fancy_file_upload", "focusin", function() {
+            $(this).FancyFileUpload({
+                params: {
+                    action: 'fileuploader'
+                },
+                maxfilesize: 1000000
+            });
         });
         $('.single-select').select2({
             theme: 'bootstrap4',

@@ -9,10 +9,10 @@
                 <div class="row">
                     <div class="col-md-6">
                         <label class="form-label">Name <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" name="name" value="{{$project->name}}">
+                        <input type="text" class="form-control" name="name" value="{{$project->name}}" {{Auth::user()->user_type->value != $admin->value ? 'readonly' : ''}}>
                         <span class="text-danger text-empty require-name"></span>
                     </div>
-                    @if(Auth::user()->user_type == $admin->value)
+                    @if(Auth::user()->user_type->value == $admin->value)
                     <div class="col-md-6">
                         <label class="form-label">Staff</label>
                         <select class="single-select mb-3 form-control" name="user_id">
@@ -21,6 +21,7 @@
                             <option value="{{ $user->id }}" @selected($user->id == $project->user_id)>{{ $user->name }}</option>
                             @endforeach
                         </select>
+                        <span class="text-danger text-empty require-user_id"></span>
                     </div>
                     @endif
                     <div class="col-md-12">
@@ -31,11 +32,15 @@
                             <option value="{{ $value->value }}" @selected($value->value == $project->status->value)>{{ $value->getLabel() }}</option>
                             @endforeach
                         </select>
+                        <span class="text-danger text-empty require-status"></span>
                     </div>
                     <div class="col-md-12 mt-3">
                         <label class="form-label">Image</label>
                         <br>
+                        @if(Auth::user()->user_type->value != $admin->value)
+                        @else
                         <input type="file" name="image" id="file">
+                        @endif
                         {{-- <div class="drag-area" ondrop="upload_file(event)" ondragover="return false">
                             <div class="icon"><i class="fas fa-cloud-upload-alt"></i></div>
                             <header>Drag & Drop to Upload File</header>
@@ -47,7 +52,11 @@
                     <div class="col-md-12 mt-3">
                         <label class="form-label">Description</label>
                         <br>
+                        @if(Auth::user()->user_type->value != $admin->value)
+                        <p>{{$project->description}}</p>
+                        @else
                         <textarea style="width:100%" name="description" class="from-control" id="" cols="30" rows="5">{{$project->description}}</textarea>
+                        @endif
                     </div>
                 </div>
             </div>

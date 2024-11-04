@@ -65,6 +65,52 @@ function deleteItem(url,id,callback)
 			}
 		});
 }
+function deleteAll(url,ids,callback)
+{
+	Swal.fire({
+		title: 'Are you sure?',
+		text: "You won't be able to revert this!",
+		icon: 'warning',
+		showCancelButton: true,
+		confirmButtonColor: '#3085d6',
+		cancelButtonColor: '#d33',
+		confirmButtonText: 'Yes'
+		}).then((result) => {
+			if (result.isConfirmed) {
+				var data = {
+					"ids" : ids,
+				}
+				$.ajax({
+					type: "DELETE",
+					url: url,
+					data: data,
+					success: function(response){
+						console.log(response);
+						if(response.status == 'error'){
+							Swal.fire(
+								'Deleted!',
+								'You can\'t delete this.',
+								'error'
+								).then((result)=>{
+									callback(response,result);
+								})
+						}
+						if(response.status == 'success'){
+							Swal.fire(
+								'Deleted!',
+								'Your file has been deleted.',
+								'success'
+								).then((result)=>{
+									callback(response,result);
+								})
+						}
+						
+					}
+				});
+				
+			}
+		});
+}
 
 // restore user
 function restore(url,id,callback)
@@ -85,6 +131,39 @@ function restore(url,id,callback)
 				$.ajax({
 					type: "GET",
 					url: url+id,
+					data: data,
+					success: function(response){
+						Swal.fire(
+						'Restored',
+						'Your item has been restored.',
+						'success'
+						).then((result)=>{
+							callback(response,result);
+						})
+					}
+				});
+				
+			}
+		});
+}
+function restoreAll(url,ids,callback)
+{
+	Swal.fire({
+		title: 'Are you sure?',
+		text: "You are restore this!",
+		icon: 'success',
+		showCancelButton: true,
+		confirmButtonColor: '#3085d6',
+		cancelButtonColor: '#d33',
+		confirmButtonText: 'Yes'
+		}).then((result) => {
+			if (result.isConfirmed) {
+				var data = {
+					"ids" : ids,
+				}
+				$.ajax({
+					type: "GET",
+					url: url,
 					data: data,
 					success: function(response){
 						Swal.fire(

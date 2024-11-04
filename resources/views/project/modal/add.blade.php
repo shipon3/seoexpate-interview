@@ -12,7 +12,7 @@
                         <input type="text" class="form-control" name="name" value="{{old('name')}}">
                         <span class="text-danger text-empty require-name"></span>
                     </div>
-                    @if(Auth::user()->user_type == $admin->value)
+                    @if(Auth::user()->user_type->value == $admin->value)
                     <div class="col-md-6">
                         <label class="form-label">Staff</label>
                         <select class="single-select mb-3 form-control" name="user_id">
@@ -21,6 +21,7 @@
                             <option value="{{ $users->id }}" @selected($users->id == old('user_id'))>{{ $users->name }}</option>
                             @endforeach
                         </select>
+                        <span class="text-danger text-empty require-user_id"></span>
                     </div>
                     @endif
                     <div class="col-md-12">
@@ -31,18 +32,13 @@
                             <option value="{{ $value->value }}" @selected($value->value == old('status'))>{{ $value->getLabel() }}</option>
                             @endforeach
                         </select>
+                        <span class="text-danger text-empty require-status"></span>
                     </div>
                     <div class="col-md-12 mt-3">
                         <label class="form-label">Image</label>
                         <br>
-                        <input type="file" name="image" id="file">
-                        {{-- <div class="drag-area" ondrop="upload_file(event)" ondragover="return false">
-                            <div class="icon"><i class="fas fa-cloud-upload-alt"></i></div>
-                            <header>Drag & Drop to Upload File</header>
-                            <span>OR</span>
-                            <button>Browse File</button>
-                            <input type="file" name="avater" id="file" hidden>
-                        </div> --}}
+                        <input type="file" name="image">
+                        {{-- <input id="fancy_file_upload" type="file" name="image" accept=".jpg, .png, image/jpeg, image/png"> --}}
                     </div>
                     <div class="col-md-12 mt-3">
                         <label class="form-label">Description</label>

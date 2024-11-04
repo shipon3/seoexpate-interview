@@ -13,9 +13,10 @@
     </div>
     <div class="ms-auto">
         <div class="btn-group">
-            @if(Auth::user()->user_type == $admin->value)
+            @if(Auth::user()->user_type->value == $admin->value)
             <button type="button" class="btn mx-1 btn-primary" id="add">Add</button>
             @endif
+            <button type="button" class="btn mx-1 btn-danger" id="deleteAll" disabled>Delete All</button>
             <a href="{{URL::previous()}}" class="btn btn-secondary">Back</a>
         </div>
     </div>
@@ -25,7 +26,7 @@
         <div class="card">
             <div class="card-body">
                 <div class="row mb-3">
-                    @if(Auth::user()->user_type == $admin)
+                    @if(Auth::user()->user_type->value == $admin->value)
                     <div class="form-group col-2">
                         <label>Staff</label>
                         <select class="select-search mb-3 form-control submitable" name="user_id" id="user_id">
@@ -50,6 +51,11 @@
                     <thead>
                         <tr>
                             <th scope="col">#</th>
+                            <th scope="col">
+                                <div class="form-check">
+                                    <input class="form-check-input" name="select_all" type="checkbox" value="" id="selectAllCheckbox">
+                                </div>
+                            </th>
                             <th scope="col">Name</th>
                             <th scope="col">Assing To</th>
                             <th scope="col">Status</th>
@@ -89,6 +95,14 @@
                     searchable: false
                 },
                 {
+                data: 'select',
+                orderable: false,
+                searchable: false,
+                render: function(data, type, full, meta) {
+                    return `<input type="checkbox" class="delete-checkbox" data-id="${full.id}">`;
+                    }
+                },
+                {
                     data: 'name'
                 },
                 {
@@ -106,6 +120,7 @@
             ],
 
         });
+        
 
         //add user model 
         $("body").on('click', '#add', function() {
@@ -229,6 +244,35 @@
                 }
             });
         });
+
+        // Toggle all checkboxes when header checkbox is clicked
+        $("#selectAllCheckbox").on("change", function() {
+            $(".delete-checkbox").prop("checked", $(this).is(":checked"));
+            $("#deleteAll").prop("disabled", $(".delete-checkbox:checked").length === 0);
+        });
+        // Enable/disable "Delete All" button based on individual checkbox selection
+        $("body").on("change", ".delete-checkbox", function() {
+            $("#selectAllCheckbox").prop("checked", $(".delete-checkbox:checked").length === $(".delete-checkbox").length);
+            $("#deleteAll").prop("disabled", $(".delete-checkbox:checked").length === 0);
+        });
+        // delete all
+        $("#deleteAll").click(function() {
+            var ids = $(".delete-checkbox:checked").map(function() {
+                return $(this).data("id");
+            }).get();
+            
+            if (ids.length > 0) {
+                deleteAll('/project/multiple/destroy', ids, function(response, result) {
+                    if (result.isConfirmed) {
+                        table.draw();
+                        toastr[response.status](response.message);
+                        $("#deleteAll").prop("disabled", true); // Disable delete button
+                        $("#selectAllCheckbox").prop("checked", false);
+                    }
+                });
+            }
+        });
+        
 
     });
 </script>
