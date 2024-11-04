@@ -23,6 +23,8 @@
                         </select>
                         <span class="text-danger text-empty require-user_id"></span>
                     </div>
+                    @else
+                    <input type="hidden" name="user_id" value="{{$project->user_id}}">
                     @endif
                     <div class="col-md-12">
                         <label class="form-label">Status</label>
@@ -54,6 +56,7 @@
                         <br>
                         @if(Auth::user()->user_type->value != $admin->value)
                         <p>{{$project->description}}</p>
+                        <textarea style="display:none" name="description" class="from-control" id="" cols="30" rows="5">{{$project->description}}</textarea>
                         @else
                         <textarea style="width:100%" name="description" class="from-control" id="" cols="30" rows="5">{{$project->description}}</textarea>
                         @endif

@@ -61,13 +61,11 @@ class ProjectController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(ProjectRequest $request, UserService $user) : JsonResponse
+    public function store(ProjectRequest $request) : JsonResponse
     {
-        dd($request);
         $data = $request->validated();
-        dd($data);
         try {
-            $this->project->create($data,$user);
+            $this->project->create($data);
             return response()->json(['status' => 'success', 'message'=> 'Data successfully created']);
             //code...
         } catch (Exception $e) {
@@ -125,20 +123,20 @@ class ProjectController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id,UserService $user)
+    public function destroy(string $id)
     {
         try {
-            $this->project->delete($id,$user);
+            $this->project->delete($id);
             return response()->json(['status' => 'success', 'message'=> 'Data successfully deleted']);
         } catch (Exception $e) {
             return response()->json(['status' => 'error', 'message'=> $e->getMessage()]);
         }
     }
 
-    public function destroyMultiple(Request $request,UserService $user)
+    public function destroyMultiple(Request $request)
     {
         try {
-            $this->project->multipleDelete($request->ids,$user);
+            $this->project->multipleDelete($request->ids);
             return response()->json(['status' => 'success', 'message'=> 'Data successfully deleted']);
         } catch (Exception $e) {
             return response()->json(['status' => 'error', 'message'=> $e->getMessage()]);
@@ -165,20 +163,20 @@ class ProjectController extends Controller
         return view('project.recycle-index',$data);
     }
 
-    public function restore(int $project_id, UserService $user) : JsonResponse
+    public function restore(int $project_id) : JsonResponse
     {
         try {
-            $this->project->restore($project_id, $user);
+            $this->project->restore($project_id);
             return response()->json(['status' => 'success', 'message'=> 'Data successfully restore']);
         } catch (Exception $e) {
             return response()->json(['status' => 'error', 'message'=> $e->getMessage()]);
         }
     }
 
-    public function restoreMultiple(Request $request, UserService $user)
+    public function restoreMultiple(Request $request)
     {
         try {
-            $this->project->multipleRestore($request->query('ids'), $user);
+            $this->project->multipleRestore($request->query('ids'));
             return response()->json(['status' => 'success', 'message'=> 'Data successfully restore']);
         } catch (Exception $e) {
             return response()->json(['status' => 'error', 'message'=> $e->getMessage()]);

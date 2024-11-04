@@ -11,12 +11,14 @@ class ProjectNotification extends Notification implements ShouldQueue
 {
     use Queueable;
     protected $project;
+    protected $subject;
     /**
      * Create a new notification instance.
      */
-    public function __construct($project)
+    public function __construct($project,$subject)
     {
         $this->project = $project;
+        $this->subject = $subject;
     }
 
     /**
@@ -35,7 +37,7 @@ class ProjectNotification extends Notification implements ShouldQueue
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-        ->subject('New Project Created') // Email subject
+        ->subject($this->subject) // Email subject
         ->view('emails.project_create', ['project' => $this->project]) // Custom view
         ->line('Thanks for new Project!')
         ->line('We appreciate your business.');
@@ -49,8 +51,8 @@ class ProjectNotification extends Notification implements ShouldQueue
     public function toArray(object $notifiable): array
     {
         return [
-            'title' => 'New Project',
-            'description' => 'You have new projects',
+            'title' => $this->subject,
+            'description' => 'You have new notify',
             'icon' => 'bx-file',
             'project_id' => $this->project->id,
             'user_name' => $this->project->user->name,

@@ -10,6 +10,11 @@ use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\DataTables;
 class ProjectService
 {
+    private UserService $user;
+    public function __construct(UserService $userService)
+    {
+        $this->user = $userService;
+    }
     public function getProjects(array $data) : object
     {
         $auth = Auth::user();
@@ -95,7 +100,7 @@ class ProjectService
         ->rawColumns(['action','assign','status'])
         ->make(true);
     }
-    public function create(array $data, UserService $user) : void
+    public function create(array $data) : void
     {
         $project = new Project();
         $project->name = $data['name'];
@@ -111,11 +116,7 @@ class ProjectService
         }
         $project->save();
 
-        $admin = $user->getAdmin();
-        $admin->notify(new ProjectNotification($project));
-
-        $get_user = $project->user;
-        $get_user->notify(new ProjectNotification($project));
+        $this->sendNotification($project,'New Project Created');
         return;
     }
 
@@ -142,45 +143,26 @@ class ProjectService
         }
         $project->save();
 
-        if($auth->user_type != UserType::ADMIN){
-            $user = $project->user;
-            $user->notify(new ProjectNotification($project));
-        }
+        $this->sendNotification($project,'Project Status Update');
         
         return;
     }
 
-    public function delete(int $project_id,UserService $user) : void
+    public function delete(int $project_id) : void
     {
-        $auth = Auth::user();
         $project = Project::with(['user'])->findOrFail($project_id);
         // if (!empty($user->image) && file_exists(public_path($project->image))) {
         //     unlink(public_path($project->image));
         // }
-        if($auth->user_type != UserType::ADMIN){
-            $admin = $user->getAdmin();
-            $admin->notify(new ProjectNotification($project));
-            
-        }else{
-            $user = $project->user;
-            $user->notify(new ProjectNotification($project));
-        }
+        $this->sendNotification($project,'Project Delete');
         $project->delete();
     }
 
-    public function multipleDelete(array $project_ids,UserService $user) : void
+    public function multipleDelete(array $project_ids) : void
     {
-        $auth = Auth::user();
         foreach($project_ids as $key => $item){
           $project = Project::where('id', $item)->first();
-          if($auth->user_type != UserType::ADMIN){
-                $admin = $user->getAdmin();
-                $admin->notify(new ProjectNotification($project));
-                
-            }else{
-                $user = $project->user;
-                $user->notify(new ProjectNotification($project));
-            }
+            $this->sendNotification($project,'Multiple Project Delete');
             $project->delete();
         }
         return;
@@ -218,37 +200,34 @@ class ProjectService
         ->make(true);
     }
 
-    public function restore(int $project_id, UserService $user) : void
+    public function restore(int $project_id) : void
     {
-        $auth = Auth::user();
         $project = Project::withTrashed()->find($project_id);
         $project->restore();
-        if($auth->user_type != UserType::ADMIN){
-            $admin = $user->getAdmin();
-            $admin->notify(new ProjectNotification($project));
-            
-        }else{
-            $user = $project->user;
-            $user->notify(new ProjectNotification($project));
+        $this->sendNotification($project,'Project Restore');
+        return;
+    }
+
+    public function multipleRestore(array $project_ids)
+    {
+        foreach($project_ids as $key => $item){
+            $project = Project::withTrashed()->find($item);
+            $project->restore();
+            $this->sendNotification($project,'Multiple Project Restore');
         }
         return;
     }
 
-    public function multipleRestore(array $project_ids, UserService $user)
+    private function sendNotification(Project $project,string $subject) : void
     {
         $auth = Auth::user();
-        foreach($project_ids as $key => $item){
-            $project = Project::withTrashed()->find($item);
-            $project->restore();
-            if($auth->user_type != UserType::ADMIN){
-                $admin = $user->getAdmin();
-                $admin->notify(new ProjectNotification($project));
-                
-            }else{
-                $user = $project->user;
-                $user->notify(new ProjectNotification($project));
-            }
+        if($auth->user_type != UserType::ADMIN){
+            $admin = $this->user->getAdmin();
+            $admin->notify(new ProjectNotification($project,$subject));
+            
+        }else{
+            $user = $project->user;
+            $user->notify(new ProjectNotification($project,$subject));
         }
-        return;
     }
 }
